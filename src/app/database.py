@@ -1,32 +1,24 @@
-from collections.abc import AsyncGenerator
+from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+DATABASE_URL = "sqlite:///./smart_task_tracker.db"
 
-DATABASE_URL = "sqlite+aiosqlite:///./smart_task_tracker.db"
-
-engine = create_async_engine(
+engine = create_engine(
     DATABASE_URL,
-    echo=False,
     connect_args={"check_same_thread": False},
+    echo=False,
 )
 
-AsyncSessionLocal = async_sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 class Base(DeclarativeBase):
     pass
 
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-            await session.commit()
-        except Exception:
-            await session.rollback()
-            raise
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

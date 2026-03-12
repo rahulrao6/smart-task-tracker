@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.backends.legacy:build"
 
 [project]
@@ -8,17 +8,20 @@ version = "0.1.0"
 description = "A smart task tracking API with AI-powered prioritization"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.110.0",
+    "fastapi>=0.111.0",
     "uvicorn[standard]>=0.29.0",
-    "sqlalchemy>=2.0.0",
+    "sqlalchemy>=2.0.30",
+    "alembic>=1.13.1",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.1",
     "aiosqlite>=0.20.0",
-    "pydantic>=2.0.0",
+    "greenlet>=3.0.3",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-asyncio>=0.23.0",
+    "pytest>=8.2.0",
+    "pytest-asyncio>=0.23.6",
     "httpx>=0.27.0",
 ]
 
@@ -27,4 +30,3 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
-testpaths = ["tests"]
