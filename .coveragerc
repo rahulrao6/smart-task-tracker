@@ -1,0 +1,7 @@
+[run]
+source = app
+core = sysmon
+
+[report]
+show_missing = True
+fail_under = 80
