@@ -5,6 +5,9 @@ A smart task tracking REST API with AI-powered prioritization. Built with FastAP
 ## Features
 
 - **Full CRUD** — Create, read, update, and delete tasks and projects via a clean REST API
+- **JWT Authentication** — Secure token-based authentication with login, register, and token refresh endpoints
+- **Rate Limiting** — Token bucket rate limiting by IP with configurable request limits per time period
+- **Database Migrations** — Alembic-based schema versioning and migration support
 - **AI-powered prioritization** — Automatic priority scoring based on priority level, status, and due date urgency
 - **Filtering & search** — Filter tasks by status, priority, project, and due date range
 - **Pagination** — Efficient pagination for large task lists
@@ -12,7 +15,10 @@ A smart task tracking REST API with AI-powered prioritization. Built with FastAP
 - **OpenAPI / Swagger UI** — Interactive API docs at `/docs`, ReDoc at `/redoc`
 - **Health endpoint** — `/health` for liveness checks
 - **CORS support** — Configurable allowed origins for browser clients
-- **SQLite storage** — Zero-configuration database, easy to swap for PostgreSQL
+- **Docker Support** — Multi-stage Docker builds with production optimization
+- **CI/CD Pipeline** — GitHub Actions for automated testing, linting, security scanning
+- **Comprehensive Tests** — Unit, integration, and E2E tests with >85% coverage
+- **SQLite/PostgreSQL** — SQLite by default, easy configuration for PostgreSQL
 
 ## Tech Stack
 
@@ -95,6 +101,23 @@ Copy `.env.example` to `.env` and configure:
 | `SECRET_KEY` | `changeme-in-production` | Secret key for security |
 | `ALLOWED_ORIGINS` | `*` | Comma-separated CORS allowed origins |
 
+## Security & Authentication
+
+### JWT Tokens
+
+The API uses JWT (JSON Web Tokens) for authentication. Access tokens are short-lived (30 minutes) and refresh tokens allow extended sessions (7 days).
+
+### Rate Limiting
+
+- Default: 100 requests per 60 seconds per IP address
+- Configurable via environment variables
+- Returns `HTTP 429` when exceeded
+- Includes `Retry-After` header with reset time
+
+### Password Security
+
+Passwords are hashed using SHA-256 with random salt. Minimum 8 characters required.
+
 ## API Reference
 
 Base URL: `/api`
@@ -103,6 +126,86 @@ Interactive documentation available at:
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 - **OpenAPI JSON**: `http://localhost:8000/openapi.json`
+
+---
+
+### Authentication
+
+#### `POST /api/auth/register`
+
+Register a new user.
+
+**Request body:**
+```json
+{
+  "username": "user@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Response 200:**
+```json
+{
+  "access_token": "eyJhbGc...",
+  "refresh_token": "eyJhbGc...",
+  "token_type": "bearer"
+}
+```
+
+---
+
+#### `POST /api/auth/login`
+
+Authenticate and get tokens.
+
+**Request body:**
+```json
+{
+  "username": "user@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Response 200:** Token object (see register endpoint)
+**Response 401:** `{ "detail": "Invalid username or password" }`
+
+Rate limited: 5 requests per 60 seconds per IP.
+
+---
+
+#### `POST /api/auth/refresh`
+
+Refresh an expired access token using a refresh token.
+
+**Request body:**
+```json
+{
+  "refresh_token": "eyJhbGc..."
+}
+```
+
+**Response 200:** Token object with new access and refresh tokens
+
+---
+
+#### `GET /api/auth/me`
+
+Get current authenticated user info.
+
+**Headers:**
+```
+Authorization: Bearer {access_token}
+```
+
+**Response 200:**
+```json
+{
+  "username": "user@example.com",
+  "is_active": true
+}
+```
+
+**Response 401:** `{ "detail": "Invalid token" }`
 
 ---
 

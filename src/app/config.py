@@ -22,11 +22,15 @@ class Settings:
             "DATABASE_URL", "sqlite+aiosqlite:///./smart_task_tracker.db"
         )
         self.secret_key = os.getenv("SECRET_KEY", "changeme-in-production")
+        self.algorithm = os.getenv("ALGORITHM", "HS256")
         self.allowed_origins = self._parse_origins(
             os.getenv("ALLOWED_ORIGINS", "*")
         )
         self.log_dir = os.getenv("LOG_DIR", "./logs")
         self.log_format = os.getenv("LOG_FORMAT", "text").lower()
+        self.rate_limit_enabled = self._parse_bool(os.getenv("RATE_LIMIT_ENABLED", "true"))
+        self.rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "100"))
+        self.rate_limit_period_seconds = int(os.getenv("RATE_LIMIT_PERIOD_SECONDS", "60"))
 
         self._validate()
 
@@ -50,6 +54,7 @@ class Settings:
         self._validate_secret_key()
         self._validate_allowed_origins()
         self._validate_log_format()
+        self._validate_rate_limiting()
 
     def _validate_app_name(self) -> None:
         """Validate app name is not empty."""
@@ -128,6 +133,17 @@ class Settings:
                 f"LOG_FORMAT must be one of {valid_formats}, got: {self.log_format}"
             )
 
+    def _validate_rate_limiting(self) -> None:
+        """Validate rate limiting configuration."""
+        if self.rate_limit_requests <= 0:
+            raise ConfigurationError(
+                f"RATE_LIMIT_REQUESTS must be positive, got: {self.rate_limit_requests}"
+            )
+        if self.rate_limit_period_seconds <= 0:
+            raise ConfigurationError(
+                f"RATE_LIMIT_PERIOD_SECONDS must be positive, got: {self.rate_limit_period_seconds}"
+            )
+
     def to_dict(self) -> dict:
         """Return configuration as dictionary."""
         return {
@@ -139,6 +155,9 @@ class Settings:
             "allowed_origins": self.allowed_origins,
             "log_dir": self.log_dir,
             "log_format": self.log_format,
+            "rate_limit_enabled": self.rate_limit_enabled,
+            "rate_limit_requests": self.rate_limit_requests,
+            "rate_limit_period_seconds": self.rate_limit_period_seconds,
         }
 
 

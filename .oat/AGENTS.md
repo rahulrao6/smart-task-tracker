@@ -143,6 +143,469 @@ When you have an assigned task: if a folder named **`oat-worker-prompt-extension
 
 This is an automatically generated reference for all oat commands.
 
+## init
+
+Initialize a repository for OAT agents
+
+**Usage:** `oat repo init <github-url> [name] [--model=<model>]
+
+Example:
+  oat init https://github.com/myorg/myproject
+  oat init https://github.com/myorg/myproject --model claude-sonnet-4-5`
+
+## workspace
+
+Manage workspaces
+
+**Usage:** `oat workspace [<name>]`
+**Subcommands:**
+
+- `list` - List workspaces
+- `connect` - Connect to a workspace
+- `add` - Add a new workspace
+- `rm` - Remove a workspace
+
+### add
+
+Add a new workspace
+
+**Usage:** `oat workspace add <name> [--branch <branch>]`
+
+### rm
+
+Remove a workspace
+
+**Usage:** `oat workspace rm <name>`
+### list
+
+List workspaces
+
+**Usage:** `oat workspace list`
+
+### connect
+
+Connect to a workspace
+
+**Usage:** `oat workspace connect <name>`
+
+## message
+
+Manage inter-agent messages
+**Subcommands:**
+
+- `send` - Send a message to another agent
+- `list` - List pending messages
+- `read` - Read a specific message
+- `ack` - Acknowledge a message
+
+### read
+
+Read a specific message
+
+**Usage:** `oat message read <message-id>`
+
+### ack
+
+Acknowledge a message
+
+**Usage:** `oat message ack <message-id>`
+
+### send
+
+Send a message to another agent
+
+**Usage:** `oat message send <recipient> <message>`
+### list
+
+List pending messages
+
+**Usage:** `oat message list`
+
+## docs
+
+Show generated CLI documentation
+
+**Usage:** `oat docs`
+
+## logs
+
+View and manage agent output logs
+
+**Usage:** `oat logs [<agent-name>] [-f|--follow]`
+**Subcommands:**
+
+- `list` - List log files
+- `search` - Search across logs
+- `clean` - Remove old logs
+
+### clean
+
+Remove old logs
+
+**Usage:** `oat logs clean --older-than <duration>`
+
+### list
+
+List log files
+
+**Usage:** `oat logs list [--repo <repo>]`
+
+### search
+
+Search across logs
+
+**Usage:** `oat logs search <pattern> [--repo <repo>]`
+
+## bug
+
+Generate a diagnostic bug report
+
+**Usage:** `oat bug [--output <file>] [--verbose] [description]`
+
+## work
+
+Manage worker agents
+
+**Usage:** `oat worker [<task>] [--repo <repo>] [--branch <branch>] [--push-to <branch>] [--issue <number>] [--issue-url <url>]`
+
+**Subcommands:**
+
+- `list` - List active workers
+- `rm` - Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
+- `reset-nudge` - Reset a worker's nudge count (one-time use per worker, for supervisor use)
+- `create` - Create a worker agent to handle a coding task
+- `spawn` - Create a worker agent to handle a coding task
+
+### reset-nudge
+
+Reset a worker's nudge count (one-time use per worker, for supervisor use)
+
+**Usage:** `oat worker reset-nudge <worker-name>`
+
+### create
+  oat worker create "Refactor database layer" --model claude-opus-4-6`
+
+### spawn
+
+Create a worker agent to handle a coding task
+
+**Usage:** `oat worker create <task description>
+
+Examples:
+  oat worker create "Add unit tests for auth module"
+  oat worker create "Fix login bug" --issue 42
+  oat worker create "Refactor database layer" --model claude-opus-4-6`
+
+### list
+
+List active workers
+
+**Usage:** `oat worker list [--repo <repo>]`
+
+### rm
+
+Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
+
+**Usage:** `oat worker rm <worker-name> [--force]`
+
+## agent
+
+Agent communication commands
+
+**Subcommands:**
+
+- `send-message` - Send a message to another agent (alias for 'message send')
+- `list-messages` - List pending messages (alias for 'message list')
+- `ack-message` - Acknowledge a message (alias for 'message ack')
+- `complete` - Signal worker completion
+- `waiting` - Signal that worker is waiting for PR resolution (dormant, zero token burn)
+- `restart` - Restart a crashed or exited agent
+- `tell` - Send direct input to an agent (works with direct backend)
+- `read-message` - Read a specific message (alias for 'message read')
+- `attach` - Watch an agent work in real-time
+- `interrupt` - Send Ctrl-C to a running agent
+
+### tell
+
+Send direct input to an agent (works with direct backend)
+
+**Usage:** `oat agent tell <agent-name> <message> [--repo <repo>]`
+
+### read-message
+
+Read a specific message (alias for 'message read')
+
+**Usage:** `oat agent read-message <message-id>`
+
+### attach
+
+Watch an agent work in real-time
+
+**Usage:** `oat agent attach <agent-name> [--read-only]
+
+Examples:
+  oat attach worker-swift-eagle
+  oat attach supervisor --read-only`
+
+### interrupt
+
+Send Ctrl-C to a running agent
+
+**Usage:** `oat agent interrupt <agent-name> [--repo <repo>]`
+
+### send-message
+
+Send a message to another agent (alias for 'message send')
+
+**Usage:** `oat agent send-message <recipient> <message>`
+
+### list-messages
+
+List pending messages (alias for 'message list')
+
+**Usage:** `oat agent list-messages`
+
+### ack-message
+
+Acknowledge a message (alias for 'message ack')
+
+**Usage:** `oat agent ack-message <message-id>`
+
+### complete
+
+Signal worker completion
+
+**Usage:** `oat agent complete [--summary <text>] [--failure <reason>]`
+
+### waiting
+
+Signal that worker is waiting for PR resolution (dormant, zero token burn)
+
+**Usage:** `oat agent waiting`
+
+### restart
+
+Restart a crashed or exited agent
+
+**Usage:** `oat agent restart <name> [--repo <repo>] [--force]`
+
+## attach
+
+Watch an agent work in real-time
+
+**Usage:** `oat agent attach <agent-name> [--read-only]
+
+Examples:
+  oat attach worker-swift-eagle
+  oat attach supervisor --read-only`
+
+## refresh
+
+Sync agent worktrees with main branch
+
+**Usage:** `oat refresh`
+
+## diagnostics
+
+Show system diagnostics in machine-readable format
+
+**Usage:** `oat diagnostics [--json] [--output <file>]`
+
+## version
+
+Show version information
+
+**Usage:** `oat version [--json]`
+
+## daemon
+
+Manage the oat daemon
+**Subcommands:**
+
+- `start` - Start the daemon
+- `stop` - Stop the daemon
+- `status` - Show daemon status
+- `logs` - View daemon logs
+- `restart` - Restart the daemon (stop + start)
+
+### start
+
+Start the daemon
+
+**Usage:** `oat daemon start`
+
+### stop
+
+Stop the daemon
+
+**Usage:** `oat daemon stop`
+
+### status
+
+Show daemon status
+
+**Usage:** `oat daemon status`
+
+### logs
+
+View daemon logs
+
+**Usage:** `oat daemon logs [-f|--follow] [-n <lines>]`
+
+### restart
+
+Restart the daemon (stop + start)
+
+**Usage:** `oat daemon restart`
+
+## pr
+
+Pull request management
+**Subcommands:**
+
+- `create` - Create a PR with proper formatting and auto-dormant
+### create
+
+Create a PR with proper formatting and auto-dormant
+
+**Usage:** `oat pr create --title <title> --body <body> [--closes <issue>] [--draft]`
+
+## interrupt
+
+Send Ctrl-C to a running agent
+
+**Usage:** `oat agent interrupt <agent-name> [--repo <repo>]`
+
+## review
+
+Spawn a review agent for a PR
+
+**Usage:** `oat review <pr-url>`
+
+## worker
+
+Manage worker agents
+
+**Usage:** `oat worker [<task>] [--repo <repo>] [--branch <branch>] [--push-to <branch>] [--issue <number>] [--issue-url <url>]`
+
+**Subcommands:**
+
+- `list` - List active workers
+- `rm` - Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
+- `reset-nudge` - Reset a worker's nudge count (one-time use per worker, for supervisor use)
+- `create` - Create a worker agent to handle a coding task
+- `spawn` - Create a worker agent to handle a coding task
+
+### rm
+
+Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
+
+**Usage:** `oat worker rm <worker-name> [--force]`
+
+### reset-nudge
+
+Reset a worker's nudge count (one-time use per worker, for supervisor use)
+
+**Usage:** `oat worker reset-nudge <worker-name>`
+
+### create
+  oat worker create "Refactor database layer" --model claude-opus-4-6`
+
+### spawn
+
+Create a worker agent to handle a coding task
+
+**Usage:** `oat worker create <task description>
+
+Examples:
+  oat worker create "Add unit tests for auth module"
+  oat worker create "Fix login bug" --issue 42
+  oat worker create "Refactor database layer" --model claude-opus-4-6`
+
+### list
+
+List active workers
+
+**Usage:** `oat worker list [--repo <repo>]`
+
+## status
+
+Show all active agents and system status
+
+**Usage:** `oat status`
+
+## cleanup
+
+Clean up orphaned resources
+
+**Usage:** `oat cleanup [--dry-run] [--verbose] [--merged]`
+
+## history
+
+Show task history for a repository
+
+**Usage:** `oat repo history [--repo <repo>] [-n <count>] [--status <status>] [--search <query>] [--full]`
+
+## tell
+
+Send direct input to an agent (works with direct backend)
+
+**Usage:** `oat agent tell <agent-name> <message> [--repo <repo>]`
+
+## config
+
+View or modify repository configuration
+
+**Usage:** `oat config [repo] [--mq-enabled=true|false] [--mq-track=all|author|assigned] [--ps-enabled=true|false] [--ps-track=all|author|assigned]`
+
+## agents
+
+Manage agent definitions
+
+**Subcommands:**
+
+- `list` - List available agent definitions for a repository
+- `spawn` - Spawn an agent from a prompt file
+- `reset` - Reset agent definitions to defaults (re-copy from templates)
+
+### spawn
+
+Spawn an agent from a prompt file
+
+**Usage:** `oat agents spawn --name <name> --class <class> --prompt-file <file> [--repo <repo>] [--task <task>]`
+
+### reset
+
+Reset agent definitions to defaults (re-copy from templates)
+
+**Usage:** `oat agents reset [--repo <repo>]`
+### list
+
+List available agent definitions for a repository
+
+**Usage:** `oat agents list [--repo <repo>]`
+
+## ui
+
+Launch the interactive terminal UI
+
+**Usage:** `oat ui [--repo <repo>]`
+
+## stop-all
+
+Stop daemon and kill all oat sessions
+
+**Usage:** `oat stop-all [--clean] [--yes]`
+
+## list
+**Usage:** `oat repo list`
+
+## start
+
+Start the daemon (alias for 'daemon start')
+
+**Usage:** `oat start`
+
 ## repo
 
 Manage repositories
@@ -210,502 +673,11 @@ Example:
   oat init https://github.com/myorg/myproject
   oat init https://github.com/myorg/myproject --model claude-sonnet-4-5`
 
-## init
-
-Initialize a repository for OAT agents
-
-**Usage:** `oat repo init <github-url> [name] [--model=<model>]
-
-Example:
-  oat init https://github.com/myorg/myproject
-  oat init https://github.com/myorg/myproject --model claude-sonnet-4-5`
-
-## review
-
-Spawn a review agent for a PR
-
-**Usage:** `oat review <pr-url>`
-
-## status
-
-Show all active agents and system status
-
-**Usage:** `oat status`
-
-## message
-
-Manage inter-agent messages
-
-**Subcommands:**
-
-- `send` - Send a message to another agent
-- `list` - List pending messages
-- `read` - Read a specific message
-- `ack` - Acknowledge a message
-
-### send
-
-Send a message to another agent
-
-**Usage:** `oat message send <recipient> <message>`
-
-### list
-
-List pending messages
-
-**Usage:** `oat message list`
-
-### read
-
-Read a specific message
-
-**Usage:** `oat message read <message-id>`
-
-### ack
-
-Acknowledge a message
-
-**Usage:** `oat message ack <message-id>`
-
-## cleanup
-
-Clean up orphaned resources
-
-**Usage:** `oat cleanup [--dry-run] [--verbose] [--merged]`
-
-## work
-
-Manage worker agents
-
-**Usage:** `oat worker [<task>] [--repo <repo>] [--branch <branch>] [--push-to <branch>] [--issue <number>] [--issue-url <url>]`
-
-**Subcommands:**
-
-- `create` - Create a worker agent to handle a coding task
-- `spawn` - Create a worker agent to handle a coding task
-- `list` - List active workers
-- `rm` - Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
-- `reset-nudge` - Reset a worker's nudge count (one-time use per worker, for supervisor use)
-
-### create
-
-Create a worker agent to handle a coding task
-
-**Usage:** `oat worker create <task description>
-
-Examples:
-  oat worker create "Add unit tests for auth module"
-  oat worker create "Fix login bug" --issue 42
-  oat worker create "Refactor database layer" --model claude-opus-4-6`
-
-### spawn
-
-Create a worker agent to handle a coding task
-
-**Usage:** `oat worker create <task description>
-
-Examples:
-  oat worker create "Add unit tests for auth module"
-  oat worker create "Fix login bug" --issue 42
-  oat worker create "Refactor database layer" --model claude-opus-4-6`
-
-### list
-
-List active workers
-
-**Usage:** `oat worker list [--repo <repo>]`
-
-### rm
-
-Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
-
-**Usage:** `oat worker rm <worker-name> [--force]`
-
-### reset-nudge
-
-Reset a worker's nudge count (one-time use per worker, for supervisor use)
-
-**Usage:** `oat worker reset-nudge <worker-name>`
-
-## tell
-
-Send direct input to an agent (works with direct backend)
-
-**Usage:** `oat agent tell <agent-name> <message> [--repo <repo>]`
-
-## interrupt
-
-Send Ctrl-C to a running agent
-
-**Usage:** `oat agent interrupt <agent-name> [--repo <repo>]`
-
-## bug
-
-Generate a diagnostic bug report
-
-**Usage:** `oat bug [--output <file>] [--verbose] [description]`
-
-## start
-
-Start the daemon (alias for 'daemon start')
-
-**Usage:** `oat start`
-
-## attach
-
-Watch an agent work in real-time
-
-**Usage:** `oat agent attach <agent-name> [--read-only]
-
-Examples:
-  oat attach worker-swift-eagle
-  oat attach supervisor --read-only`
-
-## config
-
-View or modify repository configuration
-
-**Usage:** `oat config [repo] [--mq-enabled=true|false] [--mq-track=all|author|assigned] [--ps-enabled=true|false] [--ps-track=all|author|assigned]`
-
-## pr
-
-Pull request management
-
-**Subcommands:**
-
-- `create` - Create a PR with proper formatting and auto-dormant
-
-### create
-
-Create a PR with proper formatting and auto-dormant
-
-**Usage:** `oat pr create --title <title> --body <body> [--closes <issue>] [--draft]`
-
-## list
-
-List tracked repositories
-
-**Usage:** `oat repo list`
-
-## docs
-
-Show generated CLI documentation
-
-**Usage:** `oat docs`
-
-## logs
-
-View and manage agent output logs
-
-**Usage:** `oat logs [<agent-name>] [-f|--follow]`
-
-**Subcommands:**
-
-- `search` - Search across logs
-- `clean` - Remove old logs
-- `list` - List log files
-
-### list
-
-List log files
-
-**Usage:** `oat logs list [--repo <repo>]`
-
-### search
-
-Search across logs
-
-**Usage:** `oat logs search <pattern> [--repo <repo>]`
-
-### clean
-
-Remove old logs
-
-**Usage:** `oat logs clean --older-than <duration>`
-
-## workspace
-
-Manage workspaces
-
-**Usage:** `oat workspace [<name>]`
-
-**Subcommands:**
-
-- `add` - Add a new workspace
-- `rm` - Remove a workspace
-- `list` - List workspaces
-- `connect` - Connect to a workspace
-
-### add
-
-Add a new workspace
-
-**Usage:** `oat workspace add <name> [--branch <branch>]`
-
-### rm
-
-Remove a workspace
-
-**Usage:** `oat workspace rm <name>`
-
-### list
-
-List workspaces
-
-**Usage:** `oat workspace list`
-
-### connect
-
-Connect to a workspace
-
-**Usage:** `oat workspace connect <name>`
-
 ## repair
 
 Repair state after crash
 
 **Usage:** `oat repair [--verbose]`
-
-## refresh
-
-Sync agent worktrees with main branch
-
-**Usage:** `oat refresh`
-
-## version
-
-Show version information
-
-**Usage:** `oat version [--json]`
-
-## agents
-
-Manage agent definitions
-
-**Subcommands:**
-
-- `list` - List available agent definitions for a repository
-- `spawn` - Spawn an agent from a prompt file
-- `reset` - Reset agent definitions to defaults (re-copy from templates)
-
-### list
-
-List available agent definitions for a repository
-
-**Usage:** `oat agents list [--repo <repo>]`
-
-### spawn
-
-Spawn an agent from a prompt file
-
-**Usage:** `oat agents spawn --name <name> --class <class> --prompt-file <file> [--repo <repo>] [--task <task>]`
-
-### reset
-
-Reset agent definitions to defaults (re-copy from templates)
-
-**Usage:** `oat agents reset [--repo <repo>]`
-
-## stop-all
-
-Stop daemon and kill all oat sessions
-
-**Usage:** `oat stop-all [--clean] [--yes]`
-
-## history
-
-Show task history for a repository
-
-**Usage:** `oat repo history [--repo <repo>] [-n <count>] [--status <status>] [--search <query>] [--full]`
-
-## worker
-
-Manage worker agents
-
-**Usage:** `oat worker [<task>] [--repo <repo>] [--branch <branch>] [--push-to <branch>] [--issue <number>] [--issue-url <url>]`
-
-**Subcommands:**
-
-- `create` - Create a worker agent to handle a coding task
-- `spawn` - Create a worker agent to handle a coding task
-- `list` - List active workers
-- `rm` - Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
-- `reset-nudge` - Reset a worker's nudge count (one-time use per worker, for supervisor use)
-
-### reset-nudge
-
-Reset a worker's nudge count (one-time use per worker, for supervisor use)
-
-**Usage:** `oat worker reset-nudge <worker-name>`
-
-### create
-
-Create a worker agent to handle a coding task
-
-**Usage:** `oat worker create <task description>
-
-Examples:
-  oat worker create "Add unit tests for auth module"
-  oat worker create "Fix login bug" --issue 42
-  oat worker create "Refactor database layer" --model claude-opus-4-6`
-
-### spawn
-
-Create a worker agent to handle a coding task
-
-**Usage:** `oat worker create <task description>
-
-Examples:
-  oat worker create "Add unit tests for auth module"
-  oat worker create "Fix login bug" --issue 42
-  oat worker create "Refactor database layer" --model claude-opus-4-6`
-
-### list
-
-List active workers
-
-**Usage:** `oat worker list [--repo <repo>]`
-
-### rm
-
-Remove a worker. Use --force to force-remove without confirmations (e.g. when killing a stuck worker after verifying work is preserved).
-
-**Usage:** `oat worker rm <worker-name> [--force]`
-
-## agent
-
-Agent communication commands
-
-**Subcommands:**
-
-- `interrupt` - Send Ctrl-C to a running agent
-- `list-messages` - List pending messages (alias for 'message list')
-- `read-message` - Read a specific message (alias for 'message read')
-- `complete` - Signal worker completion
-- `waiting` - Signal that worker is waiting for PR resolution (dormant, zero token burn)
-- `send-message` - Send a message to another agent (alias for 'message send')
-- `ack-message` - Acknowledge a message (alias for 'message ack')
-- `restart` - Restart a crashed or exited agent
-- `attach` - Watch an agent work in real-time
-- `tell` - Send direct input to an agent (works with direct backend)
-
-### attach
-
-Watch an agent work in real-time
-
-**Usage:** `oat agent attach <agent-name> [--read-only]
-
-Examples:
-  oat attach worker-swift-eagle
-  oat attach supervisor --read-only`
-
-### tell
-
-Send direct input to an agent (works with direct backend)
-
-**Usage:** `oat agent tell <agent-name> <message> [--repo <repo>]`
-
-### interrupt
-
-Send Ctrl-C to a running agent
-
-**Usage:** `oat agent interrupt <agent-name> [--repo <repo>]`
-
-### list-messages
-
-List pending messages (alias for 'message list')
-
-**Usage:** `oat agent list-messages`
-
-### read-message
-
-Read a specific message (alias for 'message read')
-
-**Usage:** `oat agent read-message <message-id>`
-
-### complete
-
-Signal worker completion
-
-**Usage:** `oat agent complete [--summary <text>] [--failure <reason>]`
-
-### waiting
-
-Signal that worker is waiting for PR resolution (dormant, zero token burn)
-
-**Usage:** `oat agent waiting`
-
-### send-message
-
-Send a message to another agent (alias for 'message send')
-
-**Usage:** `oat agent send-message <recipient> <message>`
-
-### ack-message
-
-Acknowledge a message (alias for 'message ack')
-
-**Usage:** `oat agent ack-message <message-id>`
-
-### restart
-
-Restart a crashed or exited agent
-
-**Usage:** `oat agent restart <name> [--repo <repo>] [--force]`
-
-## diagnostics
-
-Show system diagnostics in machine-readable format
-
-**Usage:** `oat diagnostics [--json] [--output <file>]`
-
-## ui
-
-Launch the interactive terminal UI
-
-**Usage:** `oat ui [--repo <repo>]`
-
-## daemon
-
-Manage the oat daemon
-
-**Subcommands:**
-
-- `status` - Show daemon status
-- `logs` - View daemon logs
-- `restart` - Restart the daemon (stop + start)
-- `start` - Start the daemon
-- `stop` - Stop the daemon
-
-### start
-
-Start the daemon
-
-**Usage:** `oat daemon start`
-
-### stop
-
-Stop the daemon
-
-**Usage:** `oat daemon stop`
-
-### status
-
-Show daemon status
-
-**Usage:** `oat daemon status`
-
-### logs
-
-View daemon logs
-
-**Usage:** `oat daemon logs [-f|--follow] [-n <lines>]`
-
-### restart
-
-Restart the daemon (stop + start)
-
-**Usage:** `oat daemon restart`
 
 
 
@@ -769,13 +741,11 @@ Sync your worktree with the latest changes from the main branch.
 If there are rebase conflicts, stop and let the user know which files have conflicts.
 
 **Note for forks:** When working in a fork, always rebase onto `upstream/main` (the original repo) to keep your work up to date with the latest upstream changes.
-
 ---
 
 # /status - Show system status
 
 Display the current oat system status including agent information.
-
 ## Instructions
 
 Run the following commands and summarize the results:
@@ -801,8 +771,6 @@ Run the following commands and summarize the results:
    ```
 
 5. Check for any pending messages:
-   ```bash
-   oat message list
    ```
 
 Present the results in a clear, organized format with sections for:
@@ -812,13 +780,11 @@ Present the results in a clear, organized format with sections for:
 - Current branch and git status
 - Recent commits
 - Pending messages (if any)
-
 ---
 
 # /workers - List active workers
 
 Display all active worker agents for the current repository.
-
 ## Instructions
 
 Run the following command to list workers:
@@ -833,7 +799,6 @@ Present the results showing:
 - What task they are working on (if available)
 
 If no workers are active, let the user know and suggest using `oat worker create "task description"` to spawn a new worker.
-
 ---
 
 # /messages - Check and manage messages

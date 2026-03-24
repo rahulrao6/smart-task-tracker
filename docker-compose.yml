@@ -1,23 +1,68 @@
 version: "3.9"
 
 services:
+  # PostgreSQL database (optional - comment out for SQLite)
+  db:
+    image: postgres:16-alpine
+    container_name: smart-tracker-db
+    environment:
+      POSTGRES_USER: tracker_user
+      POSTGRES_PASSWORD: tracker_password
+      POSTGRES_DB: smart_tracker
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tracker_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - postgres
+
   app:
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
+    profiles:
+      - postgres
+      retries: 3
+      start_period: 10s
+
+  app-sqlite:
     build: .
+    container_name: smart-tracker-app
     ports:
       - "8000:8000"
     volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
       - sqlite_data:/app/data
     environment:
+      - DEBUG=false
       - DATABASE_URL=sqlite+aiosqlite:////app/data/tasks.db
+      - SECRET_KEY=your-secret-key-change-in-production
+      - ALLOWED_ORIGINS=*
+      - RATE_LIMIT_ENABLED=true
+      - RATE_LIMIT_REQUESTS=100
+      - RATE_LIMIT_PERIOD_SECONDS=60
+      - LOG_DIR=/app/logs
+      - LOG_FORMAT=text
     env_file:
       - .env
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
+    profiles:
+      - default
 
 volumes:
   sqlite_data:
+  postgres_data:
