@@ -3,7 +3,7 @@ from io import StringIO
 
 import pytest
 
-from src.app.utils.logging import log_error, log_event, setup_logger
+from src.app.utils.logging import log_error, log_event, log_nudge, setup_logger
 
 
 @pytest.fixture
@@ -88,3 +88,74 @@ def test_log_event_multiple_calls(test_logger, caplog):
     assert "Event 1" in caplog.text
     assert "Event 2" in caplog.text
     assert "Event 3" in caplog.text
+
+
+def test_log_nudge(test_logger, caplog):
+    """Test that log_nudge logs nudge events correctly."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-123", 1)
+    
+    assert "Nudge event" in caplog.text
+    assert "worker_id=worker-123" in caplog.text
+    assert "nudge_count=1" in caplog.text
+    assert "timestamp=" in caplog.text
+
+
+def test_log_nudge_with_reason(test_logger, caplog):
+    """Test that log_nudge includes reason when provided."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-456", 2, reason="CI failure")
+    
+    assert "Nudge event" in caplog.text
+    assert "worker_id=worker-456" in caplog.text
+    assert "nudge_count=2" in caplog.text
+    assert "reason=CI failure" in caplog.text
+    assert "timestamp=" in caplog.text
+
+
+def test_log_nudge_with_context(test_logger, caplog):
+    """Test that log_nudge includes additional context data."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-789", 3, reason="merge conflict", branch="main", status="pending")
+    
+    assert "Nudge event" in caplog.text
+    assert "worker_id=worker-789" in caplog.text
+    assert "nudge_count=3" in caplog.text
+    assert "reason=merge conflict" in caplog.text
+    assert "branch=main" in caplog.text
+    assert "status=pending" in caplog.text
+    assert "timestamp=" in caplog.text
+
+
+def test_log_nudge_without_reason(test_logger, caplog):
+    """Test that log_nudge works without a reason."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-111", 5, extra_info="test_data")
+    
+    assert "Nudge event" in caplog.text
+    assert "worker_id=worker-111" in caplog.text
+    assert "nudge_count=5" in caplog.text
+    assert "extra_info=test_data" in caplog.text
+    assert "timestamp=" in caplog.text
+
+
+def test_log_nudge_level(test_logger, caplog):
+    """Test that log_nudge logs at INFO level."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-999", 1)
+    
+    assert len(caplog.records) == 1
+    assert caplog.records[0].levelno == logging.INFO
+
+
+def test_log_nudge_multiple_calls(test_logger, caplog):
+    """Test multiple log_nudge calls with incrementing counts."""
+    with caplog.at_level(logging.INFO):
+        log_nudge(test_logger, "worker-multi", 1, reason="first")
+        log_nudge(test_logger, "worker-multi", 2, reason="second")
+        log_nudge(test_logger, "worker-multi", 3, reason="third")
+    
+    assert len(caplog.records) == 3
+    assert "nudge_count=1" in caplog.text
+    assert "nudge_count=2" in caplog.text
+    assert "nudge_count=3" in caplog.text

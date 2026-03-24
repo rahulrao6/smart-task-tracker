@@ -59,3 +59,26 @@ def log_error(logger: logging.Logger, error: str, **kwargs: Any) -> None:
     if context:
         message += f" | {context}"
     logger.error(message)
+
+
+def log_nudge(logger: logging.Logger, worker_id: str, nudge_count: int, reason: Optional[str] = None, **kwargs: Any) -> None:
+    """
+    Log a nudge event for loop prevention tracking.
+    
+    Args:
+        logger: Logger instance to use
+        worker_id: ID of the worker being nudged
+        nudge_count: Current nudge count for this worker
+        reason: Optional reason for the nudge
+        **kwargs: Additional context data to include in the log
+    """
+    context_parts = [f"worker_id={worker_id}", f"nudge_count={nudge_count}"]
+    if reason:
+        context_parts.append(f"reason={reason}")
+    
+    if kwargs:
+        context_parts.extend(f"{k}={v}" for k, v in kwargs.items())
+    
+    context = " | ".join(context_parts)
+    message = f"Nudge event | {context} | timestamp={datetime.now(timezone.utc).isoformat()}"
+    logger.info(message)
