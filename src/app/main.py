@@ -1,8 +1,18 @@
+import logging
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.app.routers import projects, tasks
 from src.app.routers.analytics import router as analytics_router
+from src.app.utils.logging import setup_application_logger
+
+logger = setup_application_logger(
+    log_dir=os.getenv("LOG_DIR", "./logs"),
+    level=logging.INFO,
+    json_format=os.getenv("LOG_FORMAT", "text").lower() == "json",
+)
 
 app = FastAPI(
     title="Smart Task Tracker",
@@ -25,4 +35,5 @@ app.include_router(analytics_router)
 
 @app.get("/health", tags=["health"])
 def health() -> dict:
+    logger.info("Health check requested")
     return {"status": "ok"}
