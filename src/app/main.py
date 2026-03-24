@@ -4,25 +4,28 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.app.config import get_settings
 from src.app.routers import projects, tasks
 from src.app.routers.analytics import router as analytics_router
 from src.app.utils.logging import setup_application_logger
 
+settings = get_settings()
+
 logger = setup_application_logger(
-    log_dir=os.getenv("LOG_DIR", "./logs"),
+    log_dir=settings.log_dir,
     level=logging.INFO,
-    json_format=os.getenv("LOG_FORMAT", "text").lower() == "json",
+    json_format=settings.log_format == "json",
 )
 
 app = FastAPI(
-    title="Smart Task Tracker",
+    title=settings.app_name,
     description="A smart task tracking API with AI-powered prioritization",
-    version="0.1.0",
+    version=settings.app_version,
 )
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
