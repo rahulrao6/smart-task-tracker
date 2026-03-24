@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import List
 
 
-def calculate_average(numbers: List[float]) -> float
+def calculate_average(numbers: List[float]) -> float:
     """Calculate the mean of a list of numbers.
     
     Args:
