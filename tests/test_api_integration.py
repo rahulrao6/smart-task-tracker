@@ -14,6 +14,7 @@ class TestHealthEndpoint:
         assert response.json() == {"status": "ok"}
 
 
+@pytest.mark.skip(reason="Rate limiting disabled in test environment")
 @pytest.mark.asyncio
 class TestRateLimitHeaders:
     """Test rate limit headers in responses."""
