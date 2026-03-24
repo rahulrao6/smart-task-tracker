@@ -112,7 +112,7 @@ class Settings:
             raise ConfigurationError(
                 f"SECRET_KEY must be at least 8 characters, got: {len(self.secret_key)}"
             )
-        if self.secret_key == "changeme-in-production" and os.getenv("DEBUG", "").lower() == "false":
+        if self.secret_key == "changeme-in-production" and os.getenv("DEBUG", "").lower() == "false":  # nosec B105
             raise ConfigurationError(
                 "SECRET_KEY must be changed from default in production mode "
                 "(DEBUG=false)"
