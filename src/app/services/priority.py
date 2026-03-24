@@ -29,7 +29,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
-from app.models import Task, TaskPriority, TaskStatus
+from src.app.models import Task, TaskPriority, TaskStatus
 
 _PRIORITY_SCORE: Dict[str, int] = {
     TaskPriority.critical: 40,

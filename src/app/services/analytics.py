@@ -21,7 +21,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List
 
-from app.models import Task, TaskStatus
+from src.app.models import Task, TaskStatus
 
 
 def get_summary_stats(tasks: List[Task]) -> dict:
