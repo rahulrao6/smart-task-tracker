@@ -12,7 +12,7 @@ from starlette.requests import Request
 from jose import JWTError, jwt
 from pydantic import BaseModel
 
-from src.app.config import settings
+from src.app.config import get_settings
 
 # JWT configuration
 ALGORITHM = "HS256"
@@ -42,6 +42,7 @@ def create_access_token(
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     """Create a JWT access token."""
+    settings = get_settings()
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
@@ -52,7 +53,7 @@ def create_access_token(
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(
         to_encode,
-        settings.SECRET_KEY,
+        settings.secret_key,
         algorithm=ALGORITHM,
     )
     return encoded_jwt
@@ -60,12 +61,13 @@ def create_access_token(
 
 def create_refresh_token(data: dict) -> str:
     """Create a JWT refresh token with longer expiration."""
+    settings = get_settings()
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode.update({"exp": expire, "type": "refresh"})
     encoded_jwt = jwt.encode(
         to_encode,
-        settings.SECRET_KEY,
+        settings.secret_key,
         algorithm=ALGORITHM,
     )
     return encoded_jwt
@@ -73,6 +75,7 @@ def create_refresh_token(data: dict) -> str:
 
 async def get_current_user(request: Request) -> str:
     """Validate JWT token and return username."""
+    settings = get_settings()
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(
@@ -83,7 +86,7 @@ async def get_current_user(request: Request) -> str:
     try:
         payload = jwt.decode(
             token,
-            settings.SECRET_KEY,
+            settings.secret_key,
             algorithms=[ALGORITHM],
         )
         username: str = payload.get("sub")

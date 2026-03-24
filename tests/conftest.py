@@ -4,9 +4,9 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from app.database import Base, get_db
-from app.main import app
-from app.models import Priority, Project, Tag, Task, TaskStatus
+from src.app.database import Base, get_db
+from src.app.main import app
+from src.app.models import TaskPriority, Project, Tag, Task, TaskStatus
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -53,7 +53,7 @@ async def client(db_engine):
 
 @pytest_asyncio.fixture
 async def sample_project(db_session: AsyncSession) -> Project:
-    project = Project(name="Test Project", description="A test project", color="#FF5733")
+    project = Project(name="Test Project", description="A test project")
     db_session.add(project)
     await db_session.commit()
     await db_session.refresh(project)
@@ -62,7 +62,7 @@ async def sample_project(db_session: AsyncSession) -> Project:
 
 @pytest_asyncio.fixture
 async def sample_tag(db_session: AsyncSession) -> Tag:
-    tag = Tag(name="bug", color="#FF0000")
+    tag = Tag(name="bug")
     db_session.add(tag)
     await db_session.commit()
     await db_session.refresh(tag)
@@ -71,7 +71,7 @@ async def sample_tag(db_session: AsyncSession) -> Tag:
 
 @pytest_asyncio.fixture
 async def sample_tag2(db_session: AsyncSession) -> Tag:
-    tag = Tag(name="feature", color="#00FF00")
+    tag = Tag(name="feature")
     db_session.add(tag)
     await db_session.commit()
     await db_session.refresh(tag)
@@ -84,7 +84,7 @@ async def sample_task(db_session: AsyncSession, sample_project: Project) -> Task
         title="Fix login bug",
         description="Users cannot log in with email",
         status=TaskStatus.todo,
-        priority=Priority.high,
+        priority=TaskPriority.high,
         project_id=sample_project.id,
     )
     db_session.add(task)
@@ -101,18 +101,18 @@ async def multiple_tasks(
         Task(
             title="Task One",
             status=TaskStatus.todo,
-            priority=Priority.low,
+            priority=TaskPriority.low,
             project_id=sample_project.id,
         ),
-        Task(title="Task Two", status=TaskStatus.in_progress, priority=Priority.medium),
+        Task(title="Task Two", status=TaskStatus.in_progress, priority=TaskPriority.medium, project_id=sample_project.id),
         Task(
             title="Task Three",
             status=TaskStatus.done,
-            priority=Priority.high,
+            priority=TaskPriority.high,
             project_id=sample_project.id,
         ),
-        Task(title="Task Four", status=TaskStatus.cancelled, priority=Priority.urgent),
-        Task(title="Search Me Task", status=TaskStatus.todo, priority=Priority.low),
+        Task(title="Task Four", status=TaskStatus.cancelled, priority=TaskPriority.high),
+        Task(title="Search Me Task", status=TaskStatus.todo, priority=TaskPriority.low),
     ]
     for task in tasks:
         db_session.add(task)

@@ -30,3 +30,19 @@
 2026-03-24T06:06:36.075906+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi
 2026-03-24T06:06:36.075996+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi
 2026-03-24T06:06:36.076060+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi
+2026-03-24T06:12:38.708895+00:00 - [32mINFO[0m - test_logger - Test event occurred
+2026-03-24T06:12:38.709982+00:00 - [32mINFO[0m - test_logger - User action
+2026-03-24T06:12:38.710722+00:00 - [31mERROR[0m - test_logger - An error occurred
+2026-03-24T06:12:38.711384+00:00 - [31mERROR[0m - test_logger - Database error
+2026-03-24T06:12:38.712015+00:00 - [33mWARNING[0m - test_logger - A warning occurred
+2026-03-24T06:12:38.712649+00:00 - [33mWARNING[0m - test_logger - Performance issue
+2026-03-24T06:12:38.714307+00:00 - [32mINFO[0m - test_logger - Event 1
+2026-03-24T06:12:38.714413+00:00 - [32mINFO[0m - test_logger - Event 2
+2026-03-24T06:12:38.714471+00:00 - [32mINFO[0m - test_logger - Event 3
+2026-03-24T06:12:38.715039+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-123
+2026-03-24T06:12:38.715672+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-456
+2026-03-24T06:12:38.716304+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-789
+2026-03-24T06:12:38.739865+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-999
+2026-03-24T06:12:38.740675+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi
+2026-03-24T06:12:38.740789+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi
+2026-03-24T06:12:38.740878+00:00 - [32mINFO[0m - test_logger - Nudge event for worker worker-multi

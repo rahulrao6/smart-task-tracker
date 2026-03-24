@@ -9,37 +9,37 @@ class TestSettingsConfiguration:
     def test_default_settings(self):
         """Test that default settings are properly set."""
         settings = Settings()
-        assert settings.APP_NAME == "Smart Task Tracker"
-        assert settings.APP_VERSION == "0.1.0"
-        assert settings.DEBUG is False
+        assert settings.app_name == "Smart Task Tracker"
+        assert settings.app_version == "0.1.0"
+        assert settings.debug is False
 
     def test_database_url_default(self):
         """Test default database URL."""
         settings = Settings()
-        assert "sqlite" in settings.DATABASE_URL
+        assert "sqlite" in settings.database_url
 
     def test_security_settings(self):
         """Test security-related settings."""
         settings = Settings()
-        assert settings.SECRET_KEY is not None
-        assert len(settings.SECRET_KEY) > 0
-        assert settings.ALGORITHM == "HS256"
+        assert settings.secret_key is not None
+        assert len(settings.secret_key) > 0
+        assert settings.algorithm == "HS256"
 
     def test_rate_limiting_settings(self):
         """Test rate limiting configuration."""
         settings = Settings()
-        assert settings.RATE_LIMIT_ENABLED is True
-        assert settings.RATE_LIMIT_REQUESTS > 0
-        assert settings.RATE_LIMIT_PERIOD_SECONDS > 0
+        assert settings.rate_limit_enabled is True
+        assert settings.rate_limit_requests > 0
+        assert settings.rate_limit_period_seconds > 0
 
     def test_cors_settings(self):
         """Test CORS configuration."""
         settings = Settings()
-        # CORS can be "*" or comma-separated origins
-        assert settings.ALLOWED_ORIGINS is not None
+        # CORS returns a list
+        assert settings.allowed_origins is not None
 
     def test_logging_settings(self):
         """Test logging configuration."""
         settings = Settings()
-        assert settings.LOG_DIR is not None
-        assert settings.LOG_FORMAT in ["text", "json"]
+        assert settings.log_dir is not None
+        assert settings.log_format in ["text", "json"]

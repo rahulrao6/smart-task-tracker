@@ -8,7 +8,7 @@ from src.app.jwt_auth import (
     create_refresh_token,
     get_current_user,
 )
-from src.app.config import settings
+from src.app.config import get_settings
 
 
 class TestJWTTokenGeneration:
@@ -37,37 +37,40 @@ class TestJWTTokenGeneration:
 
     def test_token_contains_username(self):
         """Test that token contains the username."""
+        settings = get_settings()
         username = "testuser"
         data = {"sub": username}
         token = create_access_token(data)
         
         payload = jwt.decode(
             token,
-            settings.SECRET_KEY,
+            settings.secret_key,
             algorithms=["HS256"],
         )
         assert payload["sub"] == username
 
     def test_refresh_token_has_type(self):
         """Test that refresh token has type field."""
+        settings = get_settings()
         data = {"sub": "testuser"}
         token = create_refresh_token(data)
         
         payload = jwt.decode(
             token,
-            settings.SECRET_KEY,
+            settings.secret_key,
             algorithms=["HS256"],
         )
         assert payload["type"] == "refresh"
 
     def test_token_expiration(self):
         """Test that token has expiration time."""
+        settings = get_settings()
         data = {"sub": "testuser"}
         token = create_access_token(data)
         
         payload = jwt.decode(
             token,
-            settings.SECRET_KEY,
+            settings.secret_key,
             algorithms=["HS256"],
         )
         assert "exp" in payload

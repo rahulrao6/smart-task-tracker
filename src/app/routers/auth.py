@@ -94,11 +94,12 @@ async def refresh_token(request: RefreshTokenRequest) -> Token:
     """Refresh access token using a refresh token."""
     try:
         from jose import jwt
-        from src.app.config import settings
+        from src.app.config import get_settings
 
+        settings = get_settings()
         payload = jwt.decode(
             request.refresh_token,
-            settings.SECRET_KEY,
+            settings.secret_key,
             algorithms=["HS256"],
         )
         username: str = payload.get("sub")
