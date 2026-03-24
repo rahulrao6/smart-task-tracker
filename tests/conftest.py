@@ -1,8 +1,12 @@
 """Shared pytest fixtures for Smart Task Tracker test suite."""
+import os
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+
+# Disable rate limiting for tests
+os.environ["RATE_LIMIT_ENABLED"] = "false"
 
 from src.app.database import Base, get_db
 from src.app.main import app
