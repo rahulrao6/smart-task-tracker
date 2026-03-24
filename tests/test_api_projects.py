@@ -2,7 +2,7 @@
 import pytest
 from httpx import AsyncClient
 
-from app.models import Project
+from src.app.models import Project
 
 
 class TestListProjects:

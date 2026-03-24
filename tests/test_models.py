@@ -4,7 +4,7 @@ from datetime import datetime
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models import Priority, Project, Tag, Task, TaskStatus
+from src.app.models import TaskPriority, Project, Tag, Task, TaskStatus
 
 
 class TestProjectModel:
@@ -157,7 +157,7 @@ class TestTaskModel:
         assert task.id is not None
         assert task.title == "Do something"
         assert task.status == TaskStatus.todo
-        assert task.priority == Priority.medium
+        assert task.priority == TaskPriority.medium
         assert task.description is None
         assert task.due_date is None
         assert task.completed_at is None
@@ -173,7 +173,7 @@ class TestTaskModel:
             title="Complete feature",
             description="Implement the feature as described",
             status=TaskStatus.in_progress,
-            priority=Priority.urgent,
+            priority=TaskPriority.critical,
             due_date=due,
             project_id=sample_project.id,
         )
@@ -184,7 +184,7 @@ class TestTaskModel:
         assert task.title == "Complete feature"
         assert task.description == "Implement the feature as described"
         assert task.status == TaskStatus.in_progress
-        assert task.priority == Priority.urgent
+        assert task.priority == TaskPriority.critical
         assert task.due_date == due
         assert task.project_id == sample_project.id
 
@@ -267,10 +267,10 @@ class TestTaskModel:
         assert tag is not None
 
     async def test_priority_enum_values_correct(self):
-        assert Priority.low == "low"
-        assert Priority.medium == "medium"
-        assert Priority.high == "high"
-        assert Priority.urgent == "urgent"
+        assert TaskPriority.low == "low"
+        assert TaskPriority.medium == "medium"
+        assert TaskPriority.high == "high"
+        assert TaskPriority.critical == "urgent"
 
     async def test_status_enum_values_correct(self):
         assert TaskStatus.todo == "todo"

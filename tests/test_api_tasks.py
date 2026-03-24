@@ -2,7 +2,7 @@
 import pytest
 from httpx import AsyncClient
 
-from app.models import Priority, Project, Tag, Task, TaskStatus
+from src.app.models import TaskPriority, Project, Tag, Task, TaskStatus
 
 
 class TestListTasks:

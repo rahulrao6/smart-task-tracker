@@ -3,9 +3,9 @@ import pytest
 from datetime import datetime, timedelta, timezone
 from types import SimpleNamespace
 
-from app.models import Priority, TaskStatus
-from app.services.analytics import get_productivity_stats, get_summary_stats
-from app.services.priority import (
+from src.app.models import TaskPriority, TaskStatus
+from src.app.services.analytics import get_productivity_stats, get_summary_stats
+from src.app.services.priority import (
     _due_date_score,
     _staleness_score,
     get_smart_priority_list,
@@ -16,7 +16,7 @@ from app.services.priority import (
 def _make_task(
     title: str = "Test Task",
     status: TaskStatus = TaskStatus.todo,
-    priority: Priority = Priority.medium,
+    priority: TaskPriority = TaskPriority.medium,
     due_date: datetime | None = None,
     completed_at: datetime | None = None,
     created_at: datetime | None = None,
@@ -126,28 +126,28 @@ class TestStalenessScore:
 
 class TestScoreTask:
     def test_urgent_priority_contributes_40(self):
-        task = _make_task(priority=Priority.urgent)
+        task = _make_task(priority=TaskPriority.critical)
         score = score_task(task)
         assert score >= 40
 
     def test_high_priority_contributes_30(self):
-        task = _make_task(priority=Priority.high)
+        task = _make_task(priority=TaskPriority.high)
         score = score_task(task)
         assert score >= 30
 
     def test_medium_priority_contributes_15(self):
-        task = _make_task(priority=Priority.medium)
+        task = _make_task(priority=TaskPriority.medium)
         score = score_task(task)
         assert score >= 15
 
     def test_low_priority_contributes_5(self):
-        task = _make_task(priority=Priority.low)
+        task = _make_task(priority=TaskPriority.low)
         score = score_task(task)
         assert score >= 5
 
     def test_overdue_urgent_task_max_score(self):
         task = _make_task(
-            priority=Priority.urgent,
+            priority=TaskPriority.critical,
             due_date=datetime.now(tz=timezone.utc) - timedelta(days=1),
         )
         score = score_task(task)
@@ -155,7 +155,7 @@ class TestScoreTask:
 
     def test_no_due_date_no_staleness_score_equals_priority_only(self):
         task = _make_task(
-            priority=Priority.medium,
+            priority=TaskPriority.medium,
             updated_at=datetime.now(tz=timezone.utc),
         )
         score = score_task(task)
@@ -163,11 +163,11 @@ class TestScoreTask:
 
     def test_stale_task_gets_higher_score(self):
         recent = _make_task(
-            priority=Priority.medium,
+            priority=TaskPriority.medium,
             updated_at=datetime.now(tz=timezone.utc),
         )
         stale = _make_task(
-            priority=Priority.medium,
+            priority=TaskPriority.medium,
             updated_at=datetime.now(tz=timezone.utc) - timedelta(days=40),
         )
         assert score_task(stale) > score_task(recent)
@@ -175,8 +175,8 @@ class TestScoreTask:
 
 class TestGetSmartPriorityList:
     def test_excludes_done_tasks(self):
-        done = _make_task(title="Done", status=TaskStatus.done, priority=Priority.urgent)
-        todo = _make_task(title="Todo", status=TaskStatus.todo, priority=Priority.low)
+        done = _make_task(title="Done", status=TaskStatus.done, priority=TaskPriority.critical)
+        todo = _make_task(title="Todo", status=TaskStatus.todo, priority=TaskPriority.low)
         result = get_smart_priority_list([done, todo])
         titles = [r["task"].title for r in result]
         assert "Done" not in titles
@@ -184,19 +184,19 @@ class TestGetSmartPriorityList:
 
     def test_excludes_cancelled_tasks_does_not_filter(self):
         cancelled = _make_task(
-            title="Cancelled", status=TaskStatus.cancelled, priority=Priority.low
+            title="Cancelled", status=TaskStatus.cancelled, priority=TaskPriority.low
         )
         result = get_smart_priority_list([cancelled])
         assert len(result) == 1
 
     def test_sorted_by_score_descending(self):
-        low = _make_task(title="Low", priority=Priority.low)
+        low = _make_task(title="Low", priority=TaskPriority.low)
         urgent = _make_task(
             title="Urgent",
-            priority=Priority.urgent,
+            priority=TaskPriority.critical,
             due_date=datetime.now(tz=timezone.utc) - timedelta(days=1),
         )
-        medium = _make_task(title="Medium", priority=Priority.medium)
+        medium = _make_task(title="Medium", priority=TaskPriority.medium)
         result = get_smart_priority_list([low, medium, urgent])
         scores = [r["score"] for r in result]
         assert scores == sorted(scores, reverse=True)
@@ -211,7 +211,7 @@ class TestGetSmartPriorityList:
         assert get_smart_priority_list(tasks) == []
 
     def test_result_contains_task_and_score(self):
-        task = _make_task(title="My Task", priority=Priority.high)
+        task = _make_task(title="My Task", priority=TaskPriority.high)
         result = get_smart_priority_list([task])
         assert len(result) == 1
         assert "task" in result[0]
