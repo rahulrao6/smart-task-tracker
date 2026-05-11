@@ -1,4 +1,6 @@
 """Authentication endpoints."""
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel
 
@@ -65,7 +67,7 @@ async def register(request: RegisterRequest) -> Token:
 
 @router.post("/login", response_model=Token)
 @rate_limit(requests=5, period_seconds=60)
-async def login(request: LoginRequest, current_user: str = None) -> Token:
+async def login(request: LoginRequest, current_user: Optional[str] = None) -> Token:
     """Authenticate user and return access/refresh tokens."""
     try:
         user = authenticate_user(

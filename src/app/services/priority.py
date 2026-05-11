@@ -27,9 +27,14 @@ Scoring model (higher score = higher urgency):
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypedDict
 
 from src.app.models import Task, TaskPriority, TaskStatus
+
+
+class _ScoredTask(TypedDict):
+    task: Task
+    score: int
 
 _PRIORITY_SCORE: Dict[str, int] = {
     TaskPriority.critical: 40,
@@ -92,7 +97,7 @@ def score_task(task: Task) -> int:
 def get_smart_priority_list(tasks: List[Task]) -> List[Dict[str, Any]]:
     """Return tasks sorted by urgency score (descending), excluding done/cancelled tasks."""
     active = [t for t in tasks if t.status not in (TaskStatus.done, TaskStatus.cancelled)]
-    scored = [{"task": t, "score": score_task(t)} for t in active]
+    scored: List[_ScoredTask] = [{"task": t, "score": score_task(t)} for t in active]
     scored.sort(key=lambda x: x["score"], reverse=True)
     return [
         {

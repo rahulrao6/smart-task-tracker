@@ -11,6 +11,8 @@ os.environ["RATE_LIMIT_ENABLED"] = "false"
 from src.app.database import Base, get_db
 from src.app.main import app
 from src.app.models import TaskPriority, Project, Tag, Task, TaskStatus
+import src.app.routers.projects as _projects_router
+import src.app.routers.tasks as _tasks_router
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -46,6 +48,9 @@ async def client(db_engine):
             yield session
 
     app.dependency_overrides[get_db] = override_get_db
+
+    _projects_router._projects.clear()
+    _tasks_router._tasks.clear()
 
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"

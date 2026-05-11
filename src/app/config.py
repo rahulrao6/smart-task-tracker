@@ -1,7 +1,7 @@
 """Configuration validation module for Smart Task Tracker."""
 
 import os
-from typing import Optional
+from typing import Callable, Optional
 
 
 class ConfigurationError(Exception):
@@ -161,11 +161,15 @@ class Settings:
         }
 
 
+_settings_instance: Optional[Settings] = None
+
+
 def get_settings() -> Settings:
     """Get or create the global settings instance."""
-    if not hasattr(get_settings, "_instance"):
+    global _settings_instance
+    if _settings_instance is None:
         try:
-            get_settings._instance = Settings()
+            _settings_instance = Settings()
         except ConfigurationError as e:
             raise RuntimeError(f"Configuration validation failed: {e}") from e
-    return get_settings._instance
+    return _settings_instance

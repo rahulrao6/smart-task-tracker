@@ -110,10 +110,12 @@ def setup_logger(
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(level)
 
+    formatter: logging.Formatter
     if json_format:
-        console_formatter = JSONFormatter()
+        formatter = JSONFormatter()
     else:
-        console_formatter = TextFormatter()
+        formatter = TextFormatter()
+    console_formatter = formatter
 
     console_handler.setFormatter(console_formatter)
     logger.addHandler(console_handler)
